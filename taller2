@@ -30,3 +30,39 @@ INSERT INTO Product (id, name, price, category_id) VALUES (1, 'Product X', 100.0
 INSERT INTO Category (id, name) VALUES (1, 'Food');
 
 SELECT * FROM Product WHERE category_id = 1;
+-------------------------------------------------------------
+REATE DATABASE videojuegos_inv;
+
+USE videojuegos_inv;
+
+CREATE TABLE Juegos (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(255),
+    consola VARCHAR(50),
+    fecha_lanzamiento DATE
+);
+
+INSERT INTO Juegos (id, nombre, consola, fecha_lanzamiento)
+VALUES
+    (1, 'Super Mario', 'Nintendo Switch', '1985-09-13'),
+    (2, 'The Legend of Zelda', 'Nes', '1986-02-21'),
+    (3, 'Bayonetta', 'Xbox 360', '2009-10-29'),
+    (4, 'Kirby's Dream Land', 'Game Boy',  '1992-04-27') 
+    (5, 'Pikmin', 'GameCube', '2001-10-26');
+
+CREATE TABLE Devs (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(255),
+    juegos INT,
+    
+);
+
+INSERT INTO devs (id, nombre, juegos)
+VALUES
+    (1, 'Nintendo', '500'),
+    (2, 'Ubisoft', '600'),
+    (3, 'Rockstar Games', '67'),
+    (4, 'Epic Games', '29');
+
+SELECT * FROM Juegos;
+
