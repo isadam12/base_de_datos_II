@@ -1,0 +1,32 @@
+CREATE TABLE Order_ (
+    id INT PRIMARY KEY
+);
+
+CREATE TABLE Order_line (
+    order_id INT,
+    id INT,
+    quantity INT,
+    FOREIGN KEY (order_id) REFERENCES Order_(id)
+);
+
+CREATE TABLE Product (
+    id INT PRIMARY KEY,
+    name VARCHAR(255),
+    price FLOAT,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES Category(id)
+);
+
+CREATE TABLE Category (
+    id INT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+
+
+ INSERT INTO Order_ (id) VALUES (1);
+INSERT INTO Order_line (order_id, id, quantity) VALUES (111, 1, 5);
+INSERT INTO Product (id, name, price, category_id) VALUES (1, 'Product X', 100.00, 1);
+INSERT INTO Category (id, name) VALUES (1, 'Food');
+
+SELECT * FROM Product WHERE category_id = 1;
