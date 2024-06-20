@@ -1,0 +1,152 @@
+CREATE DATABASE cartera_electronicat2;
+
+USE cartera_electronicat2;
+
+-- Tabla User_ --
+CREATE TABLE User_ (
+    user_id INT PRIMARY KEY,
+    name_ VARCHAR(30),
+    email VARCHAR(30),
+    password_ VARCHAR(30),
+    salt DECIMAL(10,2),
+    balance DECIMAL(10,2)
+);
+
+INSERT INTO User_ (user_id, name_, password_, salt, balance)
+VALUES
+    (1, 'Jeremias Vasquez', '1212_', '10', '5000'),
+    (2, 'Andres Miranda', '1313_', '15', '6000'),
+    (3, 'Mario Bros', 'superstar1', '10','20000'),
+    (4, 'Simon Gutierrez', 'sm1','10', '15000'),
+    (5, 'Timmy Turner', 'padrinosm14', '15', '30000');
+
+
+-- Tabla Contactos --
+CREATE TABLE Contact (
+    contact_id INT PRIMARY KEY,
+    user_id INT,
+    friend_id INT,
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (friend_id) REFERENCES User(user_id)
+);
+
+INSERT INTO Contact (contac_id, user_id, friend_)
+VALUES
+    (1, '1', '2'),
+    (2, '1', '3'),
+    (3, '2', '4'),
+    (4, '3', '5'),
+    (5, '4', '1');
+
+-- Tabla Transaction --
+CREATE TABLE Transaction_ (
+    transaction_id INT PRIMARY KEY,
+    reason VARCHAR(50),
+    status_ VARCHAR(50),
+    from_id INT,
+    to_id INT,
+    amount DECIMAL(10, 2),
+    timestamp_ TIMESTAMP,
+    category VARCHAR(25),
+    request_send VARCHAR(30),
+    FOREIGN KEY (from_id) REFERENCES User_ (user_id),
+    FOREIGN KEY (to_id) REFERENCES User_ (user_id)
+);
+
+INSERT INTO Transaction_ (transaction_id, reason, status_, from_id, to_id, amount, timestamp_, category, request_send)
+VALUES
+    (1, 'Pago', 'en transito', '1', '2', '100.00', '2024-06-20 10:30:00', 'Pago', 'Debito'),
+    (2, 'Devolucion', 'completa', '3', '1', '50.00', '2024-05-20 15:30:00', 'Transaccion', 'Debito'),
+    (3, 'Pago', 'en transito', '2', '4', '500.00', '2024-06-20 7:30:00', 'Pago', 'Debito'),
+    (4, 'Servicio', 'en transito', '5', '3', '5.00', '2024-06-20 9:00:00', 'Suscripcion', 'Corriente'),
+    (5, 'Servicio', 'en revision', '4', '1', '20.00', '2024-06-19 22:00:00', 'Suscripcion', 'Corriente');
+
+-- Tabla User_detail --
+CREATE TABLE User_Details (
+	user_id INT PRIMARY KEY,
+    account_no INT,
+    type_ VARCHAR(50),
+    phone INT,
+    image VARCHAR(20),
+    balance DECIMAL(10, 2),
+    aadhar_doc VARCHAR(25)
+);
+
+INSERT INTO User_Details (user_id, account_no, type_, phone,  image, balance, aadhar_doc)
+VALUES
+    (1, '123', 'personal', '65897852', 'pfp.jpg', '5000', 'pasaportscan.pdf'),
+    (2, '456', 'personal', '62224444', 'fotopersonal.jpg', '6000', 'cedula.pdf'),
+    (3, '789', 'personal', '69557888', 'profilepic.jpg', '20000', 'sst.pdf'),
+    (4, '1001', 'personal', '6758672', 'perfill.jpg', '15000', 'cedulapersonal.pdf'),
+    (5,'1001', 'personal', '6758672', 'perfill.jpg', '15000', 'cedulapersonal.pdf');
+
+--------------------------------------------------------------------------------------------------------
+
+parte 2
+
+CREATE DATABASE Expedientes_sispan;
+
+USE Expedientes_sispan;
+
+-- tabla para ingresar al sistema, almacenando los usuarios los lic, y contras--
+
+CREATE TABLE Usuarios (
+    ID INT PRIMARY KEY,
+    Nombre_Usuario VARCHAR(25),
+    Contra VARCHAR(25)
+);
+
+
+INSERT INTO Usuarios (Nombre_Usuario, Contra)
+VALUES
+    (1, 'Juan Perez', '1234'),
+    (2, 'Miriam Chang', '5678'),
+    (3, 'Luisa Ruiz', '91011'),
+    (4, 'Andrea Cruz', '1212'),
+    (5, 'Annie Flor', '8589');
+    
+-- Tabla estados -- 
+CREATE TABLE Estados (
+    id_estado INT PRIMARY KEY,
+    estado VARCHAR(25)
+);
+INSERT INTO Estados (id_estado, estado)
+VALUES
+    (1, 'pendiente'),
+    (2, 'en proceso'),
+    (3, 'cerrado');
+    
+    -- Tabla aseguradora --
+CREATE TABLE Aseguradora (
+    id_aseg INT PRIMARY KEY,
+    nombre VARCHAR(50)
+);
+INSERT INTO Aseguradora (id_aseg, nombre)
+VALUES
+    (1, 'Assa'),
+    (2, 'Ancon S.A.'),
+    (3, 'Blue Cross'),
+    (4, 'ACERTA'),
+    (5, 'La Regional');
+    
+-- tabla para los expedientes --
+CREATE TABLE Expedientes (
+    exp_id INT PRIMARY KEY,
+    Conductor VARCHAR(25),
+    Aseguradora INT,
+    FOREIGN KEY (Aseguradora) REFERENCES Aseguradora(id_aseg),
+    no_caso INT,
+    tipo_proceso VARCHAR(25),
+    Juzgado VARCHAR(25),
+    fecha DATE,
+    estado INT,
+    FOREIGN KEY (estado) REFERENCES Estados(id_estado)
+);
+
+INSERT INTO Expedientes (exp_id, conductor, aseguradora, no_caso, tipo_proceso, juzgado, fecha, estado)
+VALUES
+    (1, 'Maria Correa', '1', '254', 'demanda', 'Alcaldia de Panama', '2024-06-12', '1'),
+    (2, 'Andres Chami', '3', '927', 'choque', 'Chitre', '2024-06-20', '2'),
+    (3, 'Carla Fuentes', '4', '857', 'choque', 'Juzgado 3ro', '2024-06-05', '3'),
+    (4, 'Carlos Molina', '2', '589', 'choque', 'Juzgado 1ro', '2024-03-12', '1'),
+    (5, 'Luz Conte', '5', '774', 'demanda', 'Chitre', '2024-06-19', '2');
