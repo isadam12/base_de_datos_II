@@ -1,0 +1,174 @@
+-- PROBLEMA 1---
+CREATE DATABASE PuntodeVenta1; 
+
+use PuntodeVenta1;
+
+CREATE TABLE Oficinas (
+    id_oficina VARCHAR(10) NOT NULL PRIMARY KEY, 
+    ciudad VARCHAR(50),
+    telefono VARCHAR(50),
+    direccion VARCHAR(50),
+    departamento VARCHAR(50),
+    pais VARCHAR(50),
+    codigoPostal VARCHAR(15),
+    continente VARCHAR(10),
+    oficina_operando ENUM('abierta', 'cerrada'),
+	clavedeAcceso varchar(10) unique
+
+);
+INSERT INTO Oficinas (id_oficina, ciudad, telefono, direccion, departamento, pais, codigoPostal, continente, oficina_operando, clavedeAcceso)
+VALUES
+    ('123a', 'Panamá', '65656565', 'calle Azul Edificio Cruz piso 7', 'ventas', 'Panamá', '07185', 'América', 'abierta', '6767a' ),
+    ('456b', 'David', '62346875', 'calle Verde Edificio O', 'ventas', 'Panamá', '04001', 'América', 'cerrada', '7878b'),
+    ('789c', 'Santiago', '68977854', 'calle Morada casa 10', 'administración', 'Panamá', '08001', 'América', 'abierta', '2323c'),
+    ('1010d', 'Arraijan', '63321514', 'calle Rosa Plaza Business', 'ventas', 'Panamá', '07064', 'América', 'abierta', '9863d'),
+    ('1212e', 'Chitre', '6547976', 'calle Arco Iris Plaza Herrera', 'depósito', 'Panamá', '05003', 'América', 'cerrada', '5457e');
+    
+
+CREATE TABLE Empleados (
+    documento INT PRIMARY KEY, 
+    apellido VARCHAR(50),
+    nombre VARCHAR(50),
+    extension VARCHAR(10),
+    email VARCHAR(100),
+    id_oficina varchar(10),
+    jefe INT,
+    cargo VARCHAR(50),
+    FOREIGN KEY (id_oficina) REFERENCES Oficinas(id_oficina),
+    añosTrabajando INT UNIQUE,
+    estatus ENUM('disponible','vacaciones', 'ausenciaJustf') 
+   
+    );
+    
+    INSERT INTO Empleados (documento, apellido, nombre, extension, email, id_oficina, jefe, cargo, añosTrabajando, estatus )
+VALUES
+    ('100001', 'Zhang', 'Luis', 'sales', 'luiszhang@mail.com', '123a', '005', 'supervisor', '5', 'disponible' ),
+    ('100025', 'Vasquez', 'Jeremías','acct','jeremias@email.net', '789c', '002', 'gerente', '10', 'vacaciones'),
+    ('20005', 'Molina', 'Andrea', 'HR', 'ad@mail.com', '456b', '002', 'becaria', '1', 'disponible'),
+    ('300089', 'Quiroz', 'Lucia', 'cs', 'contact@emailll.com', '123a', '005', 'colaboradora', '2', 'disponible'),
+    ('24000', 'Prado', 'Caren', 'admn', 'cpadmin@correo.es', '1212e', '003', 'gerente', '15', 'ausenciaJustf');
+    
+    CREATE TABLE Clientes (
+    id_cliente INT PRIMARY KEY, 
+    empresa VARCHAR(50),
+    apellido VARCHAR(50),
+    nombre VARCHAR(50),
+    telefono VARCHAR(50),
+    direccion varchar(50),
+    ciudad VARCHAR(50),
+    departamento VARCHAR(50),
+    codigoPostal VARCHAR(15),
+    pais VARCHAR(50),
+    empleadoAtiende INT,
+    limiteCredito DOUBLE,
+    tipo_Cliente ENUM('VIP', 'recurrente', 'nuevo'),
+    email VARCHAR(20) unique,
+    FOREIGN KEY (empleadoAtiende) REFERENCES Empleados(documento)
+
+    );
+    
+    INSERT INTO Clientes (id_cliente, empresa, apellido, nombre, telefono, direccion, ciudad, departamento, codigoPostal, pais, empleadoAtiende, limiteCredito,tipo_Cliente, email)
+VALUES
+	('202015', 'Movistar', 'Roldan', 'Daniel', '6669888', 'calle H edificio Movistar', 'Panamá', 'ventas', '0782', 'Panamá', '100001', '2000','recurrente', 'roldandan@mail.to'),
+    ('303016', 'FEMSA', 'Reyes', 'Ana', '63268790', 'Cerveceria Nacional calle quinta', 'Chitre', 'depósito', '0698', 'Panamá', '100025', '50000', 'VIP', 'reyesana@correo.es'),
+    ('404017', 'Philips', 'Gonzalez', 'Carlos', '65557894', 'Av Balboa edif 8', 'Panamá', 'ventas', '0077', 'Panamá', '24000', '50000', 'recurrente', 'philipscg@mail.mil'),
+    ('505018', 'GoT', 'Targaryen', 'Rhaenyra', '62258635', 'Avenida Arco Iris', 'Boquete', 'depósito', '0413', 'Panamá', '100025', '1000000', 'VIP', 'rhaequeen@correo.net'),
+    ('606019', 'Nestlé', 'Rodriguez', 'Mario', '6002574', 'Avenida B Oeste', 'Santiago', 'ventas', '0996', 'Panamá', '300089', '2000000', 'nuevo', 'nestlemariob@mail.es');
+
+
+
+    CREATE TABLE Pagos (
+    id_cliente INT, 
+    numeroFactura VARCHAR(50) PRIMARY KEY,
+    fechaPago DATE,
+    totalPago DOUBLE,
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente),
+    metodoPago ENUM('transferencia', 'tarjetaCredito', 'Yappy', 'efectivo'),
+    codigogenPago varchar(10) unique
+    );
+    
+    INSERT INTO Pagos (id_cliente, numeroFactura, fechaPago, totalPago, metodoPago, codigogenPago)
+VALUES
+	('202015', '2024-006a', '2024-06-15', '300', 'transferencia', '900009'),
+    ('606019', '2024-005b', '2024-05-20', '5000', 'tarjetaCredito', '800008'),
+    ('505018', '2024-005a', '2024-05-12', '10000', 'transferencia', '700007'),
+    ('404017', '2024-003c', '2024-06-03', '500', 'Yappy', '500005'),
+    ('303016', '2024-004d', '2024-04-25', '700', 'tarjetaCredito', '600006');
+    
+create table ordenes(
+	id_orden int not null auto_increment primary key,
+    fechadeRecibido date,
+    fechaLimiteEntrega date, 
+    fechaEntrega date,
+    estado varchar(15),
+    observacion text,
+    id_cliente int,
+    tipoEntrega varchar(30) unique,
+    urgente enum("SI","NO"),
+	foreign key (id_cliente) references Clientes (id_cliente)
+);
+
+insert into ordenes(id_orden,fechadeRecibido,fechaLimiteEntrega,fechaEntrega,estado,observacion,id_cliente,tipoEntrega,urgente) values
+(1,"2024-01-02","2024-01-20","2024-02-02","Retirado","Envio exitoso",'303016', "Delivery","SI"),
+(2,"2024-02-05","2024-02-15","2024-03-05","Retirado","Envio exitoso",'606019', "Sucursal","NO"),
+(3,"2024-03-10","2024-03-20","2024-04-10","Retirado","Envio exitoso",'505018', "Express","NO"),
+(4,"2024-04-20","2024-05-10","2024-05-20","Cancelado","Cliente canceló",'202015',"Programada","SI"),
+(5,"2024-05-25","2024-05-29","2024-06-20","Retirado","Envio exitoso",'404017',"Internacional","SI");
+
+create table lineasproductos(
+	id_lineaproducto int not null primary key,
+    nombreLinea varchar(50),
+    textoDescripcion varchar(4000),
+    htmlDescripcion varchar(200),
+    imagen varchar(200),
+    categoria enum('Accesorios', 'Ropa', 'Hogar', 'Zapatos', 'Bebida'),
+    marcaProducto varchar(255) unique
+);
+
+INSERT INTO lineasproductos (id_lineaproducto, nombreLinea, textoDescripcion, htmldescripcion, imagen, categoria, marcaProducto)
+VALUES
+(10, 'Bebidas', 'Bebidas para todas las edades', '<html><head><style>dl {display: block;margin-top: 1em;margin-bottom: 1em;margin-left: 0;margin-right: 0;}</style></head><body><dl><dt>Coca-cola</dt><dd>Bebidas</dd></dl></body></html>', 'https://ams3.digitaloceanspaces.com/graffica/2023/02/cocacola-logo.jpeg', 'Bebida', 'CocaCola'),
+(11, 'Zapatillas', 'Buenas para deportes', '<html><head><style>dl {display: block;margin-top: 1em;margin-bottom: 1em;margin-left: 0;margin-right: 0;}</style></head><body><dl><dt>Nike</dt><dd>Zapatillas</dd></dl></body></html>', 'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/a3e7dead-1ad2-4c40-996d-93ebc9df0fca/dunk-low-retro-zapatillas-wwlDHh.png', 'Zapatos', 'Nike'),
+(12, 'Ropa', 'Comodas de uso casual', '<html><head><style>dl {display: block;margin-top: 1em;margin-bottom: 1em;margin-left: 0;margin-right: 0;}</style></head><body><dl><dt>Camiseta de Algodón</dt><dd>Ropa</dd></dl></body></html>', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFfj04Gl1bcR-YiyoehYbxRb20N4ArHqpcTQ&s', 'Ropa', 'Patagonia'),
+(13, 'Relojes', 'Elegantes para caballeros', '<html><head><style>dl {display: block;margin-top: 1em;margin-bottom: 1em;margin-left: 0;margin-right: 0;}</style></head><body><dl><dt>Casio</dt><dd>Reloj</dd></dl></body></html>', 'https://images-cdn.ubuy.co.in/65229217a39c1b2fb0693551-casio-unisex-digital-watch-with-resin.jpg', 'Accesorios', 'Casio'),
+(14, 'Decoración', 'Bueno para la casa', '<html><head><style>dl {display: block;margin-top: 1em;margin-bottom: 1em;margin-left: 0;margin-right: 0;}</style></head><body><dl><dt>Taza de Cerámica</dt><dd>Decoración</dd></dl></body></html>', 'https://images.finenordic.com/image/69873-large-1671572257/greengate-latte-cup-alma-pale-blue.jpg', 'Hogar', 'GreenGate');
+
+create table productos(
+	id_producto varchar(15) not null primary key,
+    nombreProducto varchar(70),
+    id_lineaProducto int not null,
+    escala varchar(10),
+    cantidad int,
+    precioVenta double,
+    MSRP double,
+    descuento enum("Aplica","No aplica"),
+    disponibilidad varchar(2) unique,
+	foreign key (id_lineaProducto) references lineasproductos(id_lineaproducto)
+);
+
+INSERT INTO productos (id_producto, nombreProducto, id_lineaProducto, escala, cantidad, precioVenta, MSRP, descuento, disponibilidad) VALUES
+(21, 'Cocacola', 10, 'Mediana', 50, 1.85, 2.49, 'No Aplica', 'ND'),
+(22, 'Nike', 11, 'Mediana', 10, 110.95, 149.95, 'Aplica', 'D'),
+(23, 'Camiseta de algodón', 12, 'Larga', 50, 25.99, 29.99, 'Aplica', 'ES'),
+(24, 'Reloj', 13, 'Única', 100, 49.99, 59.99, 'Aplica', 'A'),
+(25, 'Tazas de cerámica', 14, 'Pequeño', 30, 19.99, 24.99, 'No Aplica', 'DC');
+
+create table detallesordenes(
+	id_orden int not null,
+	id_producto varchar(15),
+    cantidadPedida int not null,
+    valorUnitario double not null,
+    ordenEntrega int not null,
+    numeroDetalle varchar(20) unique,
+    estadoEntrega enum("Pendiente", "En tránsito", "Entregado"),
+	primary key (id_orden, id_producto),
+    foreign key (id_producto) references productos(id_producto),
+    foreign key (id_orden) references ordenes(id_orden)
+);
+
+INSERT INTO detallesordenes (id_orden, id_producto, cantidadPedida, valorUnitario, ordenEntrega, numeroDetalle, estadoEntrega) VALUES
+(1, '21', 50, 1.85, 1, 'EE001', 'Pendiente'),
+(2, '22', 10, 110.95, 2, 'EE002', 'En tránsito'),
+(3, '23', 50, 25.99, 3, 'EE003', 'Entregado'),
+(4, '24', 100, 49.99, 4, 'EE004', 'Pendiente'),
+(5, '25', 30, 19.99, 5, 'EE005', 'Pendiente');
